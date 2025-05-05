@@ -13,7 +13,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { MdError } from 'react-icons/md'
 
 
-export const Input = ({ label, type, id, placeholder }) => {
+export const Input = ({ label, type, id, placeholder, validation, name, multiline,
+  className, }) => {
   const {
     register,
     formState: { errors },
@@ -21,6 +22,9 @@ export const Input = ({ label, type, id, placeholder }) => {
 
   const inputError = findInputError(errors, label)
   const isInvalid = isFormInvalid(inputError)
+
+  const input_tailwind =
+    'p-5 font-medium rounded-md w-full border border-slate-300 placeholder:opacity-60'
 
   return (
     <div className="flex flex-col w-full gap-2">
@@ -37,18 +41,23 @@ export const Input = ({ label, type, id, placeholder }) => {
           )}
         </AnimatePresence>
       </div>
-      <input
-        id={id}
-        type={type}
-        className="w-full p-5 font-medium border rounded-md border-slate-300 placeholder:opacity-60"
-        placeholder={placeholder}
-        {...register(label, {
-          required: {
-            value: true,
-            message: 'required',
-          },
-        })}
-      />
+      {multiline ? (
+        <textarea
+          id={id}
+          type={type}
+          className={cn(input_tailwind, 'min-h-[10rem] max-h-[20rem] resize-y')}
+          placeholder={placeholder}
+          {...register(`${name}`, validation)}
+        ></textarea>
+      ) : (
+        <input
+          id={id}
+          type={type}
+          className={cn(input_tailwind)}
+          placeholder={placeholder}
+          {...register(name, validation)}
+        />
+      )}
     </div>
   )
 }
